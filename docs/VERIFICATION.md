@@ -1,7 +1,8 @@
 # What was checked, 4 October 2026
 
 Everything below was run on the code in this repository on the day it was written, by the
-tools in `tools/`. Nothing here is a human playtest.
+tools in `tools/`. Nothing here is a human playtest. A few of the frames are kept beside this
+file: the route log and three of its landings, the two real-GPU flights, and Kiki from the side.
 
 ## The route, end to end
 
