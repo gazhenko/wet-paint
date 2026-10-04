@@ -1,0 +1,27 @@
+{
+  "name": "wet-paint",
+  "version": "1.0.0",
+  "description": "A watercolour flight over Koriko: the town begins as a pencil sketch and every delivery lays a wash. An unofficial Kiki's Delivery Service fan game for the browser.",
+  "scripts": {
+    "serve": "node tools/serve.mjs 8713",
+    "build": "node tools/build.mjs",
+    "look": "node tools/shoot.mjs look shots/look",
+    "route": "node tools/shoot.mjs route shots/route",
+    "gpu": "node tools/gpu-probe.mjs",
+    "logo": "node tools/logo.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "playwright": "^1.63.0",
+    "three": "^0.186.1"
+  },
+  "type": "module",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gazhenko/wet-paint.git"
+  },
+  "homepage": "https://gazhenko.github.io/wet-paint/"
+}
