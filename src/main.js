@@ -92,6 +92,7 @@ studioCam.layers.enable(1);
 const paintingRT=new THREE.WebGLRenderTarget(1600,1000,{type:THREE.UnsignedByteType});
 paintingRT.texture.minFilter=THREE.LinearFilter;paintingRT.texture.magFilter=THREE.LinearFilter;
 let studioBuilt=false,reveal=null;
+const noShadow=new THREE.Matrix4().makeTranslation(5,5,5).multiply(new THREE.Matrix4().makeScale(0,0,0));
 function buildStudio(){
   const g=new GeoBuilder(),painted=paintedMaterial();
   // floorboards
@@ -216,6 +217,8 @@ function frame(){
     const k=1-Math.pow(1-clamp(reveal.t/9,0,1),2.2);
     studioCam.aspect=camera.aspect;studioCam.position.set(lerp(0,-1.1,k),lerp(.4,.55,k),lerp(1.35,3.4,k));studioCam.lookAt(lerp(0,-.15,k),lerp(.4,.3,k),0);studioCam.updateProjectionMatrix();
     game.applyDay(.45);
+    // the town's shadow maps do not apply in the studio: a matrix that maps everything outside the cascades
+    shared.uShadowMatrix.value.copy(noShadow);shared.uShadowNearMatrix.value.copy(noShadow);
     shared.uSunDir.value.set(-.35,.65,.75).normalize();shared.uCamera.value.copy(studioCam.position);
     shared.uBlooms.value[0].set(0,0,10000,1);shared.uBloomCount.value=1;shared.uLamp.value=0;shared.uHazeDensity.value=0;
     renderer.setRenderTarget(rt);renderer.clear();renderer.render(studio,studioCam);
