@@ -1,0 +1,17 @@
+import {chromium} from 'playwright';
+const browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const page=await browser.newPage({viewport:{width:640,height:360}});
+page.on('pageerror',e=>console.log('pageerror:',e.message.slice(0,300)));
+page.on('console',m=>{if(m.type()==='error')console.log('console:',m.text().slice(0,300));});
+await page.goto('http://127.0.0.1:8713/?check=1&ratio=1',{waitUntil:'load'});
+await page.waitForFunction(()=>window.wetPaint&&window.wetPaint.ready);
+const step=n=>page.evaluate(n=>new Promise(r=>{const a=window.wetPaint;const t=a.frames+n;const k=()=>a.frames>=t?r():requestAnimationFrame(k);k();}),n);
+await page.evaluate(()=>{const a=window.wetPaint;a.fixedStep=1/12;a.game.start();a.input({turn:0,climb:0,boost:false,brake:false});a.flight.locked=true;a.setDay(.1);a.teleport(-60,3.6,-12,0);a.look(-50,10,-34,-60,4,-2);});
+await step(6);
+await page.screenshot({path:process.argv[2]+'/d-before.png'});
+const dump=()=>page.evaluate(()=>{const a=window.wetPaint;const g=a.game;const k=a.world.group.parent.getObjectByName('kiki');return {phase:g.phase,pos:a.flight.pos.toArray().map(v=>+v.toFixed(2)),kiki:k.position.toArray().map(v=>+v.toFixed(2)),kvis:k.visible,ring:g.target&&g.target.ring.visible,ringPos:g.target&&g.target.ring.position.toArray(),cam:a.game.camera.mode,camPos:a.game.camera.camera.position.toArray().map(v=>+v.toFixed(1)),timer:+g.timer.toFixed(2),rot:k.rotation.toArray().slice(0,3).map(v=>+(+v).toFixed(2)),scale:k.scale.toArray()};});
+console.log('before',JSON.stringify(await dump()));
+await page.evaluate(()=>window.wetPaint.deliver());
+await step(2);console.log('after 2',JSON.stringify(await dump()));await page.screenshot({path:process.argv[2]+'/d-after2.png'});
+await step(4);console.log('after 6',JSON.stringify(await dump()));await page.screenshot({path:process.argv[2]+'/d-after6.png'});await step(20);console.log('after 26',JSON.stringify(await dump()));await page.screenshot({path:process.argv[2]+'/d-after26.png'});
+await browser.close();

@@ -4,16 +4,18 @@
 A young witch has the morning, a broom, a cat and a stack of parcels. Every delivery lays a wash. Fill the page before the light goes.</p>
 
 <p align="center">
-<a href="https://gazhenko.github.io/wet-paint/"><b>▶ Play in your browser</b></a> ·
+<a href="https://gazhenko.dev/wet-paint/"><b>▶ Play in your browser</b></a> ·
 <a href="../../releases/latest"><b>⬇ Download one file to play offline</b></a> ·
 <a href="#give-this-to-your-agent"><b>Install with your agent</b></a>
 </p>
 
-<p align="center"><a href="https://gazhenko.github.io/wet-paint/"><img src="docs/media/teaser.gif" alt="the wash spreading from the pier — click to play" width="900"></a></p>
+<p align="center"><a href="https://gazhenko.dev/wet-paint/"><img src="docs/media/teaser.gif" alt="the wash spreading from the pier — click to play" width="900"></a></p>
 
-| THE SKETCH | THE FIRST WASH | THE LAST LIGHT |
+| THE SKETCH | THE FIRST WASH | THE SQUARE |
 |---|---|---|
-| <img src="docs/media/sketch.png" width="300"> | <img src="docs/media/pier.png" width="300"> | <img src="docs/media/sunset.png" width="300"> |
+| <img src="docs/media/sketch.png" width="300"> | <img src="docs/media/pier.png" width="300"> | <img src="docs/media/square.png" width="300"> |
+| **THE LAST LIGHT** | **THE LAMPS** | **THE EASEL** |
+| <img src="docs/media/sunset.png" width="300"> | <img src="docs/media/dusk.png" width="300"> | <img src="docs/media/easel.png" width="300"> |
 
 ---
 
@@ -38,7 +40,7 @@ A music-box waltz written for the game, played by oscillators through a synthesi
 
 ## Play
 
-**Online:** https://gazhenko.github.io/wet-paint/ — any current Chrome, Edge, Firefox or Safari on a laptop or desktop. It wants WebGL 2 and a keyboard or gamepad; it is not a touch game.
+**Online:** https://gazhenko.dev/wet-paint/ — any current Chrome, Edge, Firefox or Safari on a laptop or desktop. It wants WebGL 2 and a keyboard or gamepad; it is not a touch game.
 
 **Offline:** download `WetPaint.html` from the [latest release](../../releases/latest) and open it. The whole game, three.js included, is in that one file.
 
@@ -53,7 +55,7 @@ File:    WetPaint.html (a single self-contained HTML file; also SHA256SUMS.txt)
 1. Download WetPaint.html and SHA256SUMS.txt from the release with curl -L into a temporary folder.
 2. Compute the SHA-256 of WetPaint.html and compare it with its line in SHA256SUMS.txt. If it does not match, delete it and stop.
 3. Put it somewhere sensible for this computer, for example ~/Games/WetPaint/WetPaint.html on macOS and Linux or %USERPROFILE%\Games\WetPaint\WetPaint.html on Windows, and add a shortcut (a .webloc or .desktop file, or a Start menu shortcut) that opens it in the default browser.
-4. Do not change any browser or system settings and do not launch it unless I ask. Tell me where it is and how to start it. It also plays online at https://gazhenko.github.io/wet-paint/.
+4. Do not change any browser or system settings and do not launch it unless I ask. Tell me where it is and how to start it. It also plays online at https://gazhenko.dev/wet-paint/.
 ```
 
 ## Building and checking
@@ -76,7 +78,7 @@ npm run gpu                 # frame rate at 1080p in a GPU-accelerated Chrome
 - One scene pass writes colour to one target and view-space normal + paint coverage to a second; a sun shadow pass in two orthographic cascades (70 m around the broom at 2048², 640 m at 4096²); a full-screen post pass makes the page.
 - The painter's line is the second difference of reciprocal depth (zero across any flat surface however steeply it is seen) plus normal creases, thinned with distance and jittered by noise at six boils a second.
 - Paint coverage is the union of up to fourteen wet blooms, each a disc that grows over seven seconds with a noise-wobbled edge; the final one covers the page and pours the sky.
-- The town is about forty draw calls: merged vertex-coloured geometry for the houses and landmarks, instanced windows (2,774), trees (431), lamps, boats, gulls, clouds and chimney smoke.
+- A frame is about eighty draw calls including the two shadow passes: merged vertex-coloured geometry for the houses and landmarks, instanced windows (2,774), trees (431), lamps, boats, gulls, clouds and chimney smoke.
 - Everything is deterministic from a seed; the check tools run the simulation at a fixed step.
 
 Wet Paint is an unofficial fan project and is not affiliated with or endorsed by Studio Ghibli. Code is MIT licensed; see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md).

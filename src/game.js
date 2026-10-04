@@ -22,7 +22,7 @@ const DAY=[
   {p:.45,el:54,az:12,sun:[1,.98,.93],top:[.42,.6,.86],hor:[.85,.9,.92],glow:[1,.96,.85],haze:[.82,.87,.92],shadow:[.6,.66,.9],lamp:0,stars:0,sea:[.25,.48,.68],seaLit:[.6,.78,.86]},
   {p:.8,el:22,az:-40,sun:[1,.9,.72],top:[.47,.56,.8],hor:[.98,.84,.62],glow:[1,.8,.5],haze:[.92,.84,.78],shadow:[.55,.5,.8],lamp:.25,stars:0,sea:[.3,.44,.62],seaLit:[.72,.68,.64]},
   {p:1,el:7,az:-62,sun:[1,.72,.5],top:[.36,.38,.64],hor:[.99,.66,.46],glow:[1,.62,.4],haze:[.9,.7,.66],shadow:[.5,.44,.76],lamp:1,stars:.35,sea:[.26,.33,.55],seaLit:[.72,.56,.56]},
-  {p:1.3,el:3,az:-70,sun:[.55,.52,.72],top:[.13,.15,.34],hor:[.5,.36,.46],glow:[.7,.45,.42],haze:[.45,.42,.58],shadow:[.45,.42,.7],lamp:1,stars:1,sea:[.12,.16,.3],seaLit:[.4,.42,.55]},
+  {p:1.3,el:9,az:-70,sun:[.55,.52,.72],top:[.13,.15,.34],hor:[.5,.36,.46],glow:[.7,.45,.42],haze:[.45,.42,.58],shadow:[.45,.42,.7],lamp:1,stars:1,sea:[.12,.16,.3],seaLit:[.4,.42,.55]},
 ];
 const mixArr=(a,b,t)=>a.map((v,i)=>lerp(v,b[i],t));
 
@@ -78,6 +78,7 @@ export class Game{
 
   deliver(){
     const pad=this.target;
+    if(this.phase==='landed'||this.phase==='finale')return;
     this.phase='landed';this.timer=0;
     this.flight.locked=true;
     if(this.camera.mode!=='fixed'){this.camera.mode='orbit';this.camera.orbit=0;}

@@ -70,8 +70,10 @@ float castShadow(vec4 sc,vec3 wp){
   vec3 n=nc.xyz/nc.w;
   if(all(lessThan(abs(n.xy),vec2(0.97))))return shadowTaps(uShadowNear,n,wob*0.25,1.0/2048.0,0.0025);
   vec3 s=sc.xyz/sc.w;
-  if(any(greaterThan(abs(s.xy),vec2(0.995))))return 1.0;
-  return shadowTaps(uShadowMap,s,wob*0.25,1.0/4096.0,0.0009);
+  float edge=max(abs(s.x),abs(s.y));
+  if(edge>0.995)return 1.0;
+  // the far cascade fades out at its border so the shadowed world has no visible seam
+  return mix(shadowTaps(uShadowMap,s,wob*0.25,1.0/4096.0,0.0009),1.0,smoothstep(0.8,0.98,edge));
 }
 
 vec3 hazed(vec3 col,vec3 wp){
@@ -242,7 +244,7 @@ out vec3 vWorld;
 out vec3 vNormalV;
 out vec3 vNormalW;
 float swell(vec2 p){
-  return sin(p.x*0.07+uTime*0.7)*0.32+sin(p.y*0.11-uTime*0.55+p.x*0.02)*0.26+(texture(tNoise,p*vec2(0.0008,0.005)+uTime*0.002).r-0.5)*0.22;
+  return sin(p.x*0.07+uTime*0.7)*0.32+sin(p.y*0.11-uTime*0.55+p.x*0.02)*0.26+(texture(tNoise,p*vec2(0.0008,0.005)+uTime*0.002).r-0.5)*0.16;
 }
 void main(){
   vec4 wp=modelMatrix*vec4(position,1.0);
@@ -272,8 +274,8 @@ void main(){
   float wob=(texture(tNoise,vWorld.xz*vec2(0.01,0.05)+vec2(uTime*0.01,0.0)).r-0.5)*0.06;
   float l=ndl+wob;
   float w=max(fwidth(l)*1.5,0.02);
-  float lit=smoothstep(0.07-w,0.07+w,l);
-  float mid=smoothstep(-0.09-w,-0.09+w,l);
+  float lit=smoothstep(0.11-w,0.11+w,l);
+  float mid=smoothstep(-0.17-w,-0.17+w,l);
   vec3 col=mix(uSeaDeep,mix(uSeaDeep,uSeaLit,0.55),mid);
   col=mix(col,uSeaLit,lit);
   // strokes: long thin horizontals
@@ -283,9 +285,10 @@ void main(){
   // glitter path under the sun
   vec3 V=normalize(uCamera-vWorld);
   vec3 R=reflect(-V,N);
-  float g=pow(max(dot(R,uSunDir),0.0),48.0);
-  float sparkle=step(0.6,texture(tNoise,vWorld.xz*0.15+uTime*0.05).b);
-  col=mix(col,vec3(1.0,0.97,0.9),g*sparkle*0.9*(1.0-uSunDir.y*0.6));
+  // the glitter path: short horizontal strokes where the water faces the sun
+  float g=pow(max(dot(R,uSunDir),0.0),24.0);
+  float sparkle=step(0.58,texture(tNoise,vWorld.xz*vec2(0.004,0.09)+vec2(uTime*0.01,0.0)).b)*step(0.45,texture(tNoise,vWorld.xz*0.15+uTime*0.05).b);
+  col=mix(col,vec3(1.0,0.97,0.9),g*sparkle*0.7*(1.0-uSunDir.y*0.6));
   // foam where the water meets the quay and the beach
   float shore=down(14.0,0.0,abs(vWorld.z))*down(130.0,80.0,abs(vWorld.x));
   float foam=step(0.5,texture(tNoise,vWorld.xz*0.05+uTime*0.03).a)*shore;

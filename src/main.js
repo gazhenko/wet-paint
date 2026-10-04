@@ -216,7 +216,7 @@ function frame(){
     const k=1-Math.pow(1-clamp(reveal.t/9,0,1),2.2);
     studioCam.aspect=camera.aspect;studioCam.position.set(lerp(0,-1.1,k),lerp(.4,.55,k),lerp(1.35,3.4,k));studioCam.lookAt(lerp(0,-.15,k),lerp(.4,.3,k),0);studioCam.updateProjectionMatrix();
     game.applyDay(.45);
-    shared.uSunDir.value.set(-.55,.6,.45).normalize();shared.uCamera.value.copy(studioCam.position);
+    shared.uSunDir.value.set(-.35,.65,.75).normalize();shared.uCamera.value.copy(studioCam.position);
     shared.uBlooms.value[0].set(0,0,10000,1);shared.uBloomCount.value=1;shared.uLamp.value=0;shared.uHazeDensity.value=0;
     renderer.setRenderTarget(rt);renderer.clear();renderer.render(studio,studioCam);
     post.uniforms.uSunView.value.copy(shared.uSunDir.value).transformDirection(studioCam.matrixWorldInverse);

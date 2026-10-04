@@ -53,6 +53,14 @@ if(mode==='close'){
   await api('a.look(-120,30,10,-150,22,-38);');await step(10);await shot('c11-lighthouse');
   await api('a.look(0,78,-100,20,62,-150);');await step(10);await shot('c12-airship');
 }
+if(mode==='one'){
+  // one named view from the look set, for re-rendering a single README image
+  const views={sketch:'a.teleport(0,19,118,Math.PI);',pier:'a.bloom(-60,-12,90);a.bloom(0,66,95);a.setDay(2/7);a.setSky(.4);a.teleport(-70,10,-40,0.9);',
+    square:'a.bloom(-60,-12,90);a.bloom(0,66,95);a.bloom(135,-8,85);a.bloom(112,188,110);a.setDay(4/7);a.setSky(.7);a.teleport(20,30,110,Math.PI);',
+    sunset:'a.paintAll();a.setDay(1);a.teleport(60,34,-70,2.4);',lighthouse:'a.paintAll();a.setDay(1);a.teleport(-110,26,10,-2.2);',dusk:'a.paintAll();a.setDay(1.3);a.teleport(-10,22,30,Math.PI);'};
+  const name=process.env.VIEW||'sunset';
+  await api(views[name]);await step(40);await shot(name);
+}
 if(mode==='debug'){
   await api('a.bloom(-60,-12,90);a.bloom(0,66,95);a.teleport(-70,10,-40,0.9);');await step(30);
   for(const [n,v] of [['d0-final',0],['d1-color',1],['d2-normal',2],['d3-coverage',3],['d4-edge',4],['d5-depth',5]]){await api(`a.debug(${v})`);await step(2);await shot(n);}
@@ -108,9 +116,11 @@ if(mode==='ending'){
 if(mode==='teaser'){
   const n=parseInt(process.env.FRAMES||'84');
   await hud(false);
-  await api('a.fixedStep=1/12;a.setDay(.1);a.teleport(-60,3.6,-12,0);a.look(-50,10,-34,-60,4,-2);a.game.target=a.game.padByWho["the harbourmaster"];');
-  await step(6);
-  for(let i=0;i<n;i++){if(i===8)await api('a.deliver()');await step(1);await page.screenshot({path:path.join(outDir,`frame_${String(i).padStart(4,'0')}.png`)});}
+  // she glides in over the pier, lands in the ribbon, and the wash spreads
+  await api('a.fixedStep=1/12;a.setDay(.1);a.teleport(-60,9,22,Math.PI);a.flight.locked=false;a.flight.speed=9;a.input({turn:0,climb:-0.3,boost:false,brake:true});a.look(-50,10,-34,-60,4,-2);');
+  await step(2);
+  for(let i=0;i<n;i++){await step(1);await page.screenshot({path:path.join(outDir,`frame_${String(i).padStart(4,'0')}.png`)});}
+  console.log(JSON.stringify(await state()));
   console.log('frames',n);
 }
 if(mode==='frames'){

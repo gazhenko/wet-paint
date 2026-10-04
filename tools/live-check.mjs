@@ -1,0 +1,12 @@
+import {chromium} from 'playwright';
+const browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const page=await browser.newPage({viewport:{width:1280,height:720}});
+page.on('pageerror',e=>console.log('pageerror:',e.message.slice(0,200)));
+const t0=Date.now();
+await page.goto((process.env.WETPAINT_URL||'https://gazhenko.dev/wet-paint/')+'?check=1&ratio=1',{waitUntil:'load'});
+await page.waitForFunction(()=>window.wetPaint&&window.wetPaint.ready,null,{timeout:90000});
+console.log('live site ready in',((Date.now()-t0)/1000).toFixed(1),'s; state',JSON.stringify(await page.evaluate(()=>window.wetPaint.state)));
+await page.evaluate(()=>window.wetPaint.game.start());
+await page.waitForTimeout(1500);
+await page.screenshot({path:process.argv[2]});
+await browser.close();
